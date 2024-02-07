@@ -1,13 +1,31 @@
-let walker;
+
+// Walker
+
+// let walker;
+
+// function setup() {
+// 	createCanvas(400, 400);
+// 	walker = new Walker(200, 200);
+// }
+
+// function draw() {
+// 	background(51);
+// 	walker.update(); 
+// 	walker.show();
+
+// }
+
+// Mover
+
+let mover;
 
 function setup(){
-	createCanvas(400, 400);
-	walker = new walker(200, 200);
-	background(0);
-
+	createCanvas(600, 600);
+	mover = new Mover(300, 300);
 }
 
 function draw(){
-	walker.update(); 
-	walker.show();
+	background(0)
+	mover.update();
+	mover.show();
 }
