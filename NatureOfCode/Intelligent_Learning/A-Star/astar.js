@@ -6,8 +6,9 @@ var OpenSet = []
 var ClosedSet = []
 var start;
 var end;
-var w, h
-var path
+var w, h;
+var path = [];
+var NoSolution = false
 
 function Spot(i, j) {
 	this.i = i
@@ -17,9 +18,19 @@ function Spot(i, j) {
 	this.h = 0
 	this.neighbors = []
 	this.previous = undefined
+	this.wall = false;
+
+	if (random(1) < 0.2){
+		this.wall = true;
+	}
 
 	this.show = function(col){
 		fill(col)
+
+		if (this.wall){
+			fill(0)
+		}
+
 		noStroke()
 		rect(this.i*w, this.j*h, w-1, h-1)
 	}
@@ -27,6 +38,7 @@ function Spot(i, j) {
 	this.addNeighbors = function(grid){
 		var i = this.i
 		var j = this.j
+
 		if (i < cols - 1){
 			this.neighbors.push(grid[i+1][j])
 		}
@@ -39,8 +51,16 @@ function Spot(i, j) {
 		if (j > 0){
 			this.neighbors.push(grid[i][j-1])
 		}
-		
-	}
+		if (i > 0 && j > 0){
+			this.neighbors.push(grid[i-1][j-1])
+		}
+		if (i < cols -1 && j > 0){
+			this.neighbors.push(grid[][])
+		}
+	}	if (i > 0 && j < rows -1){
+			this.neighbors.push(grid[][])
+		}
+		if ()	
 }
 
 function setup() {
@@ -67,7 +87,10 @@ function setup() {
 	}
 
 	start = grid[0][0]
-	end = grid[cols-1][rows-1]
+	end = grid[cols - 1][rows - 1]
+	start.wall = false
+	end.wall = false
+
 
 	OpenSet.push(start);
 
@@ -91,19 +114,17 @@ function draw() {
 
 	if (OpenSet.length > 0){
 
-		var lowestF = 0;
+		var winner = 0;
 		for (var i = 0; i < OpenSet.length; i++){
-			if (OpenSet[i].f < OpenSet[lowestF].f){
-				lowestF = i
+			if (OpenSet[i].f < OpenSet[winner].f){
+				winner = i
 			}
 		}
 
-		var current = OpenSet[lowestF]
+		var current = OpenSet[winner]
 
 		if (current == end) {
-
-
-
+			noLoop()
 			console.log("DONE")
 		}
 
@@ -114,7 +135,7 @@ function draw() {
 		for (var i = 0; i < neighbors.length; i++){
 			var neighbor = neighbors[i]
 
-			if (!ClosedSet.includes(neighbor)){
+			if (!ClosedSet.includes(neighbor) && !neighbor.wall){
 				var tempG = current.g + 1
 
 				if (OpenSet.includes(neighbor)){
@@ -134,6 +155,9 @@ function draw() {
 		}
 
 	} else{
+		console.log("No Solution");
+		NoSolution = true
+		noLoop()
 		//
 	}
 
@@ -151,12 +175,15 @@ function draw() {
 		OpenSet[i].show(color(0,255,0))
 	}
 
-	path = []
-	var temp = current
-	path.push(temp)
-	while (temp.previous){
-		path.push(temp.previous)
-		temp = temp.previous
+
+	if (!NoSolution){
+		path = []
+		var temp = current
+		path.push(temp)
+		while (temp.previous){
+			path.push(temp.previous)
+			temp = temp.previous
+		}
 	}
 
 	for (var i = 0; i < path.length; i++){
