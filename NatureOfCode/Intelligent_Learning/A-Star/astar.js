@@ -1,4 +1,4 @@
-var cols = 25;
+ var cols = 25;
 var rows = 25;
 var grid = new Array(cols);
 
